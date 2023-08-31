@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, watch } from 'vue';
 const URL_WEATHER = 'https://api.open-meteo.com/v1/forecast?';
 const URL_PARAMS_CURRENT_WEATHER = 'current_weather=true';
 export default defineComponent({
@@ -24,15 +24,25 @@ export default defineComponent({
     };
   },
   props: {
-    currentCity: String,
+    currentCity: {
+      type: String,
+      default: 'Warsaw',
+    },
   },
   mounted() {
-    this.fetchWeatherForCity('Warsaw');
+    this.fetchWeatherForCity(this.currentCity);
+  },
+  watch: {
+    currentCity(newCity, oldCity) {
+      if (newCity !== oldCity) {
+        this.fetchWeatherForCity(newCity);
+      }
+    },
   },
   methods: {
     async fetchWeatherForCity(city) {
       try {
-        const response = await this.getWeather();
+        const response = await this.getWeather(city);
         console.log({ response });
         const { current_weather } = response;
         console.log({ current_weather });
@@ -46,15 +56,12 @@ export default defineComponent({
         console.error(err);
       }
     },
-    async getWeather() {
+    async getWeather(city) {
       const { latitude, longitude } = { latitude: 52.52, longitude: 13.41 };
       const response = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
       );
-      console.log(URL_WEATHER);
-      console.log({ response });
       const json = response.json();
-      console.log({ json });
       return json;
     },
   },
