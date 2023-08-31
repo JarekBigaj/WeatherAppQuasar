@@ -8,9 +8,10 @@
 </template>
 
 <script>
-import { defineComponent, watch } from 'vue';
+import { defineComponent } from 'vue';
 const URL_WEATHER = 'https://api.open-meteo.com/v1/forecast?';
 const URL_PARAMS_CURRENT_WEATHER = 'current_weather=true';
+
 export default defineComponent({
   name: 'CurrentWeatherComponent',
   data() {
@@ -32,13 +33,7 @@ export default defineComponent({
   mounted() {
     this.fetchWeatherForCity(this.currentCity);
   },
-  watch: {
-    currentCity(newCity, oldCity) {
-      if (newCity !== oldCity) {
-        this.fetchWeatherForCity(newCity);
-      }
-    },
-  },
+
   methods: {
     async fetchWeatherForCity(city) {
       try {
