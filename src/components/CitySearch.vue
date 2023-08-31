@@ -1,20 +1,30 @@
 <template>
-  <div>
-    <input
+  <div class="search-wrapper">
+    <q-input
+      square
+      bottom-slots
       v-model="searchInput"
       @input="handleSearchInput"
       placeholder="Search for a city"
-    />
-
-    <ul>
-      <li
+    >
+      <template v-slot:prepend>
+        <q-icon name="place" />
+      </template>
+      <template v-slot:append>
+        <q-icon name="close" @click="searchInput = ''" class="cursor-pointer" />
+      </template>
+    </q-input>
+    <q-list bordered separator class="search-results">
+      <q-item
+        clickable
+        v-ripple
         v-for="city in searchingCities"
         :key="city.key"
         @click="selectCity(city)"
       >
-        {{ city.name }} - {{ city.country }}
-      </li>
-    </ul>
+        <q-item-section>{{ city.name }} - {{ city.country }}</q-item-section>
+      </q-item>
+    </q-list>
   </div>
 </template>
 
@@ -68,8 +78,23 @@ export default defineComponent({
       this.searchInput = (event.target as HTMLInputElement).value;
     },
     selectCity(city: cityProps) {
-      this.$emit('citySelected', city); // Emituj zdarzenie, aby przekazać wybrane miasto do komponentu nadrzędnego
+      this.$emit('citySelected', city);
+      this.searchInput = '';
     },
   },
 });
 </script>
+
+<style lang="scss">
+.search-results {
+  position: absolute;
+  top: 3.8em;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+.search-wrapper {
+  position: relative;
+}
+</style>

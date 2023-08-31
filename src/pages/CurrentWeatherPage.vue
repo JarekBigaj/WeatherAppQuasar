@@ -1,8 +1,11 @@
 <template>
-  <q-page>
-    <p>WeatherPage</p>
-    <city-search @citySelected="updateCurrentCity" />
-    <current-weather-component :currentCity="currentCity" />
+  <q-page class="column justify-start items-stretch content-center">
+    <q-card class="my-card col q-gutter-sm q-col-gutter-x-sm content-style">
+      <q-card-section class="q-pt-xs">
+        <city-search @citySelected="updateCurrentCity" />
+      </q-card-section>
+      <div><current-weather-component :currentCity="currentCity" /></div>
+    </q-card>
   </q-page>
 </template>
 
@@ -33,3 +36,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="scss">
+.content-style {
+  overflow: auto;
+  margin-top: 3em;
+  height: 20em;
+  width: 40em;
+}
+</style>
