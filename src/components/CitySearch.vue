@@ -7,15 +7,20 @@
     />
 
     <ul>
-      <li v-for="city in searchingCities" :key="city.key">
+      <li
+        v-for="city in searchingCities"
+        :key="city.key"
+        @click="selectCity(city)"
+      >
         {{ city.name }} - {{ city.country }}
       </li>
     </ul>
   </div>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue';
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { cityProps } from './models';
 const URL_API_GEOCODING =
   'https://geocoding-api.open-meteo.com/v1/search?name=';
 
@@ -24,21 +29,16 @@ export default defineComponent({
   data() {
     return {
       searchInput: '',
-      searchingCities: [],
+      searchingCities: [] as cityProps[],
     };
   },
   watch: {
-    currentCity(newCity, oldCity) {
-      if (newCity !== oldCity) {
-        this.fetchWeatherForCity(newCity);
-      }
-    },
     searchInput(newInput) {
       this.fetchCities(newInput);
     },
   },
   methods: {
-    async fetchCities(input) {
+    async fetchCities(input: string) {
       try {
         const response = await this.getCity(input);
         const { results } = response;
@@ -47,12 +47,12 @@ export default defineComponent({
         console.error(err);
       }
     },
-    async getCity(input) {
+    async getCity(input: string) {
       const response = await fetch(`${URL_API_GEOCODING}${input}`);
       const json = response.json();
       return json;
     },
-    processCityResults(results) {
+    processCityResults(results: cityProps[]) {
       if (Array.isArray(results)) {
         return results.map((city) => ({
           key: city.name + city.longitude + city.latitude,
@@ -64,8 +64,11 @@ export default defineComponent({
       }
       return [];
     },
-    handleSearchInput(event) {
-      this.searchInput = event.target.value;
+    handleSearchInput(event: Event) {
+      this.searchInput = (event.target as HTMLInputElement).value;
+    },
+    selectCity(city: cityProps) {
+      this.$emit('citySelected', city); // Emituj zdarzenie, aby przekazać wybrane miasto do komponentu nadrzędnego
     },
   },
 });

@@ -7,8 +7,10 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
+import { cityProps } from './models';
+
 const URL_WEATHER = 'https://api.open-meteo.com/v1/forecast?';
 const URL_PARAMS_CURRENT_WEATHER = 'current_weather=true';
 
@@ -26,16 +28,30 @@ export default defineComponent({
   },
   props: {
     currentCity: {
-      type: String,
-      default: 'Warsaw',
+      type: Object as () => cityProps,
+      default: () => ({
+        key: 'Warsaw52.23',
+        name: 'Warsaw',
+        country: 'Poland',
+        longitude: 21.01,
+        latitude: 52.23,
+      }),
+    },
+  },
+  watch: {
+    currentCity(newCity, oldCity) {
+      if (newCity !== oldCity) {
+        this.fetchWeatherForCity(newCity);
+        console.log({ newCity });
+        console.log({ oldCity });
+      }
     },
   },
   mounted() {
     this.fetchWeatherForCity(this.currentCity);
   },
-
   methods: {
-    async fetchWeatherForCity(city) {
+    async fetchWeatherForCity(city: cityProps) {
       try {
         const response = await this.getWeather(city);
         console.log({ response });
@@ -51,7 +67,7 @@ export default defineComponent({
         console.error(err);
       }
     },
-    async getWeather(city) {
+    async getWeather(city: cityProps) {
       const { latitude, longitude } = { latitude: 52.52, longitude: 13.41 };
       const response = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
