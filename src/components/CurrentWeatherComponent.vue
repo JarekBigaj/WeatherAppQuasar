@@ -1,18 +1,24 @@
 <template>
-  <div>
-    <p>Temperature: {{ currentWeather.temperature }}</p>
-    <p>Wind Direction: {{ currentWeather.winddirection }}</p>
-    <p>Wind Speed: {{ currentWeather.windspeed }}</p>
-    <p>Weather Code: {{ currentWeather.weatherCode }}</p>
+  <div class="q-pa-md row items-start q-gutter-md flex flex-center">
+    <q-card class="my-card">
+      <q-card-section horizontal>
+        <q-card-section class="q-pt-xs">
+          <p class="text-h3 q-mt-sm q-mb-xs">
+            {{ currentCity.name }}
+          </p>
+          <q-separator />
+          <p class="text-h3 q-mt-sm q-mb-xs">
+            {{ currentWeather.temperature }} ℃
+          </p>
+        </q-card-section>
+      </q-card-section>
+    </q-card>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { cityProps } from './models';
-
-const URL_WEATHER = 'https://api.open-meteo.com/v1/forecast?';
-const URL_PARAMS_CURRENT_WEATHER = 'current_weather=true';
 
 export default defineComponent({
   name: 'CurrentWeatherComponent',
@@ -68,7 +74,7 @@ export default defineComponent({
       }
     },
     async getWeather(city: cityProps) {
-      const { latitude, longitude } = { latitude: 52.52, longitude: 13.41 };
+      const { latitude, longitude } = city;
       const response = await fetch(
         `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
       );
