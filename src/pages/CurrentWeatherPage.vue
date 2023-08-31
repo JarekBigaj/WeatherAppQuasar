@@ -1,12 +1,16 @@
 <template>
-  <q-page> </q-page>
+  <q-page>
+    <p>WeatherPage</p>
+    <current-weather-component />
+  </q-page>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import CurrentWeatherComponent from '../components/CurrentWeatherComponent.vue';
 
 export default defineComponent({
   name: 'CurrentWeatherPage',
-  components: {},
+  components: { CurrentWeatherComponent },
 });
 </script>
