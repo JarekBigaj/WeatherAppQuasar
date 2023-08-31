@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <p>WeatherPage</p>
-    <current-weather-component />
+    <current-weather-component current-city="Warsaw" />
   </q-page>
 </template>
 
