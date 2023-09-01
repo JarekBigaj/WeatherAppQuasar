@@ -1,16 +1,14 @@
 <template>
-  <div class="q-pa-md row items-start q-gutter-md">
-    <q-card-section horizontal>
-      <q-card-section class="q-pt-xs">
-        <p class="text-h3 q-mt-sm q-mb-xs">
-          {{ currentCity.name }}
-        </p>
-        <q-separator />
-        <p class="text-h3 q-mt-sm q-mb-xs">
-          {{ currentWeather.temperature }} ℃
-        </p>
-      </q-card-section>
-    </q-card-section>
+  <div class="column">
+    <div class="row q-gutter-md self-center" align="justify">
+      <div class="text-h3 q-mt-sm q-mb-xs">
+        {{ currentCity.name }}
+      </div>
+
+      <div class="text-h3 q-mt-sm q-mb-xs">
+        {{ currentWeather.temperature }} ℃
+      </div>
+    </div>
   </div>
 </template>
 
