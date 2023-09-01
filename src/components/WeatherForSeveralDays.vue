@@ -21,6 +21,7 @@ import { QTableColumn } from 'quasar';
 
 interface Rows {
   name: string;
+  temperature: string;
 }
 
 export default defineComponent({
@@ -50,10 +51,10 @@ export default defineComponent({
         sortable: true,
       },
       {
-        name: 'calories',
+        name: 'temperature',
         align: 'center',
-        label: 'Calories',
-        field: 'calories',
+        label: 'Temperature',
+        field: 'temperature',
         sortable: true,
       },
     ]);
@@ -61,6 +62,7 @@ export default defineComponent({
     const rows = ref([
       {
         name: 'Temperature',
+        temperature: '29',
       },
     ]);
 
