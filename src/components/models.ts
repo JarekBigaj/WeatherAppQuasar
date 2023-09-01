@@ -13,3 +13,10 @@ export interface WeatherProps {
   windspeed: number;
   weatherCode: number;
 }
+export interface cityProps {
+  key: string;
+  name: string;
+  country: string;
+  longitude: number;
+  latitude: number;
+}
