@@ -18,9 +18,13 @@
               <current-weather-component :currentCity="currentCity" />
             </q-tab-panel>
 
-            <q-tab-panel name="three_days"> </q-tab-panel>
+            <q-tab-panel name="three_days">
+              <weather-for-several-days :currentCity="currentCity" />
+            </q-tab-panel>
 
-            <q-tab-panel name="seven_days"> </q-tab-panel>
+            <q-tab-panel name="seven_days">
+              <weather-for-several-days :currentCity="currentCity" />
+            </q-tab-panel>
           </q-tab-panels>
 
           <q-separator />
@@ -48,11 +52,12 @@
 import { defineComponent, ref } from 'vue';
 import CurrentWeatherComponent from '../components/CurrentWeatherComponent.vue';
 import CitySearch from 'src/components/CitySearch.vue';
+import WeatherForSeveralDays from 'src/components/WeatherForSeveralDays.vue';
 import { cityProps } from 'src/components/models';
 
 export default defineComponent({
   name: 'CurrentWeatherPage',
-  components: { CurrentWeatherComponent, CitySearch },
+  components: { CurrentWeatherComponent, CitySearch, WeatherForSeveralDays },
   setup() {
     return {
       tab: ref('current'),

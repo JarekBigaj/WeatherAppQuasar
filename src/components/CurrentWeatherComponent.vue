@@ -56,8 +56,6 @@ export default defineComponent({
     currentCity(newCity, oldCity) {
       if (newCity !== oldCity) {
         this.fetchWeatherForCity(newCity);
-        console.log({ newCity });
-        console.log({ oldCity });
       }
     },
   },
@@ -68,9 +66,7 @@ export default defineComponent({
     async fetchWeatherForCity(city: cityProps) {
       try {
         const response = await this.getWeather(city);
-        console.log({ response });
         const { current_weather } = response;
-        console.log({ current_weather });
         this.currentWeather = {
           temperature: current_weather.temperature,
           winddirection: current_weather.winddirection,
