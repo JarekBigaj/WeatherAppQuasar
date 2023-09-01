@@ -6,20 +6,21 @@
           <q-card-section class="q-pt-xs">
             <city-search @citySelected="updateCurrentCity" />
           </q-card-section>
+
+          <q-card-section class="q-pt-xs">
+            <div class="text-h5 q-mt-sm q-mb-xs">
+              {{ currentCity.name }}
+            </div>
+          </q-card-section>
+
           <q-tab-panels v-model="tab" animated>
             <q-tab-panel name="current">
               <current-weather-component :currentCity="currentCity" />
             </q-tab-panel>
 
-            <q-tab-panel name="three_days">
-              <div class="text-h6">Alarms</div>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            </q-tab-panel>
+            <q-tab-panel name="three_days"> </q-tab-panel>
 
-            <q-tab-panel name="seven_days">
-              <div class="text-h6">Movies</div>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            </q-tab-panel>
+            <q-tab-panel name="seven_days"> </q-tab-panel>
           </q-tab-panels>
 
           <q-separator />

@@ -14,7 +14,7 @@
         <q-icon name="close" @click="searchInput = ''" class="cursor-pointer" />
       </template>
     </q-input>
-    <q-list bordered separator class="search-results">
+    <q-list bordered class="search-results">
       <q-item
         clickable
         v-ripple
