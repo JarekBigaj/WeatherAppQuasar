@@ -21,6 +21,7 @@
         v-for="city in searchingCities"
         :key="city.key"
         @click="selectCity(city)"
+        
       >
         <q-item-section>{{ city.name }} - {{ city.country }}</q-item-section>
       </q-item>
@@ -77,10 +78,18 @@ export default defineComponent({
     handleSearchInput(event: Event) {
       this.searchInput = (event.target as HTMLInputElement).value;
     },
+    handleKeyPress(event: KeyboardEvent) {
+      if (event.key === 'Enter' && this.searchingCities.length > 0) {
+        this.selectCity(this.searchingCities[0]);
+      }
+    },
     selectCity(city: cityProps) {
       this.$emit('citySelected', city);
       this.searchInput = '';
     },
+  },
+  mounted() {
+    this.$el.querySelector('input')?.addEventListener('keyup', this.handleKeyPress);
   },
 });
 </script>

@@ -13,7 +13,6 @@
       </q-card-section>
     </q-card>
     </div>
-
   </div>
 </template>
 
@@ -45,18 +44,22 @@ export default defineComponent({
         country: 'Poland',
         longitude: 21.01,
         latitude: 52.23,
-      }),
+      })
     },
+    days: {
+        type: Number,
+        default: 3,
+      },
   },
   watch: {
     currentCity(newCity, oldCity) {
       if (newCity !== oldCity) {
-        this.fetchWeatherForSeveralDays(newCity,3);
+        this.fetchWeatherForSeveralDays(newCity,this.days);
       }
     },
   },
   mounted() {
-    this.fetchWeatherForSeveralDays(this.currentCity,3);
+    this.fetchWeatherForSeveralDays(this.currentCity,this.days);
   },
   methods: {
     async fetchWeatherForSeveralDays(city:cityProps,numberOfDays:number){
@@ -79,7 +82,7 @@ export default defineComponent({
     async getWeatherForSeveralDays(city: cityProps,numberOfDays:number) {
       const { latitude, longitude } = city;
       const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant&timezone=GMT&forecast_days=3`
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max,winddirection_10m_dominant&timezone=GMT&forecast_days=${numberOfDays}`
       );
       const json = response.json();
       return json;

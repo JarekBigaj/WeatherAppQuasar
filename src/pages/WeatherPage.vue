@@ -19,11 +19,11 @@
             </q-tab-panel>
 
             <q-tab-panel name="three_days">
-              <weather-for-several-days :currentCity="currentCity" />
+              <weather-for-several-days :currentCity="currentCity" :days="3"/>
             </q-tab-panel>
 
             <q-tab-panel name="seven_days">
-              <weather-for-several-days :currentCity="currentCity" />
+              <weather-for-several-days :currentCity="currentCity" :days="7"/>
             </q-tab-panel>
           </q-tab-panels>
 
