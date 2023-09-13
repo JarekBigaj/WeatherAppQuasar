@@ -7,9 +7,9 @@
       <div class="row">
         <div class="col">
           <div class="wind-direction">
-            <p className="sr-only">{{ currentWeather.winddirection }}</p>
+            <p class="sr-only">{{ currentWeather.winddirection }}</p>
             <span
-              className="wind-arrow"
+              class="wind-arrow"
               :style="{
                 '--wind-direction': currentWeather.winddirection + 'deg',
               }"
@@ -24,69 +24,63 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { ref, onMounted, watch } from 'vue';
 import { cityProps } from './models';
 
-export default defineComponent({
-  name: 'CurrentWeatherComponent',
-  data() {
-    return {
-      currentWeather: {
-        temperature: 0,
-        winddirection: 0,
-        windspeed: 0,
-        weatherCode: 0,
-      },
+const currentWeather = ref({
+  temperature: 0,
+  winddirection: 0,
+  windspeed: 0,
+  weatherCode: 0,
+});
+
+const fetchWeatherForCity = async (city: cityProps) => {
+  try {
+    const response = await getWeather(city);
+    const { current_weather } = response;
+    currentWeather.value = {
+      temperature: current_weather.temperature,
+      winddirection: current_weather.winddirection,
+      windspeed: current_weather.windspeed,
+      weatherCode: current_weather.weathercode,
     };
+    console.log(currentWeather.value.winddirection);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const getWeather = async (city: cityProps) => {
+  const { latitude, longitude } = city;
+  const response = await fetch(
+    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
+  );
+  const json = await response.json();
+  return json;
+};
+
+const props = defineProps({
+  currentCity: {
+    type: Object as () => cityProps,
+    default: () => ({
+      key: 'Warsaw52.23',
+      name: 'Warsaw',
+      country: 'Poland',
+      longitude: 21.01,
+      latitude: 52.23,
+    }),
   },
-  props: {
-    currentCity: {
-      type: Object as () => cityProps,
-      default: () => ({
-        key: 'Warsaw52.23',
-        name: 'Warsaw',
-        country: 'Poland',
-        longitude: 21.01,
-        latitude: 52.23,
-      }),
-    },
-  },
-  watch: {
-    currentCity(newCity, oldCity) {
-      if (newCity !== oldCity) {
-        this.fetchWeatherForCity(newCity);
-      }
-    },
-  },
-  mounted() {
-    this.fetchWeatherForCity(this.currentCity);
-  },
-  methods: {
-    async fetchWeatherForCity(city: cityProps) {
-      try {
-        const response = await this.getWeather(city);
-        const { current_weather } = response;
-        this.currentWeather = {
-          temperature: current_weather.temperature,
-          winddirection: current_weather.winddirection,
-          windspeed: current_weather.windspeed,
-          weatherCode: current_weather.weathercode,
-        };
-        console.log(this.currentWeather.winddirection);
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    async getWeather(city: cityProps) {
-      const { latitude, longitude } = city;
-      const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
-      );
-      const json = response.json();
-      return json;
-    },
-  },
+});
+
+onMounted(() => {
+  fetchWeatherForCity(props.currentCity);
+});
+
+watch(() => props.currentCity, (newCity, oldCity) => {
+  if (newCity !== oldCity) {
+    fetchWeatherForCity(newCity);
+  }
 });
 </script>
 
