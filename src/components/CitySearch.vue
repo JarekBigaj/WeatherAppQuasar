@@ -29,81 +29,81 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { ref, watch, onMounted } from 'vue';
 import { cityProps } from './models';
-const URL_API_GEOCODING =
-  'https://geocoding-api.open-meteo.com/v1/search?name=';
 
-export default defineComponent({
-  name: 'CitySearch',
-  data() {
-    return {
-      searchInput: '',
-      searchingCities: [] as cityProps[],
-      selectedCityIndex: 0,
-    };
-  },
-  watch: {
-    searchInput(newInput) {
-      this.fetchCities(newInput);
-    },
-  },
-  methods: {
-    async fetchCities(input: string) {
-      try {
-        const response = await this.getCity(input);
-        const { results } = response;
-        this.searchingCities = this.processCityResults(results);
-      } catch (err) {
-        console.error(err);
-      }
-    },
-    async getCity(input: string) {
-      const response = await fetch(`${URL_API_GEOCODING}${input}`);
-      const json = response.json();
-      return json;
-    },
-    processCityResults(results: cityProps[]) {
-      if (Array.isArray(results)) {
-        return results.map((city) => ({
-          key: city.name + city.longitude + city.latitude,
-          name: city.name,
-          country: city.country,
-          longitude: city.longitude,
-          latitude: city.latitude,
-        }));
-      }
-      return [];
-    },
-    handleSearchInput(event: Event) {
-      this.searchInput = (event.target as HTMLInputElement).value;
-    },
-    handleKeyPress(event: KeyboardEvent) {
-      if (event.key === 'Enter' && this.searchingCities.length > 0) {
-        this.selectCity(this.searchingCities[this.selectedCityIndex < 0 ? 0 : this.selectedCityIndex]);
-      } else if (event.key === 'ArrowDown') {
-        // Przewijanie w dół
-        if (this.selectedCityIndex < this.searchingCities.length - 1) {
-          this.selectedCityIndex++;
-        }
-      } else if (event.key === 'ArrowUp') {
-        // Przewijanie w górę
-        if (this.selectedCityIndex > 0) {
-          this.selectedCityIndex--;
-        }
-      }
-      console.log(this.selectedCityIndex);
-    },
-    selectCity(city: cityProps) {
-      this.$emit('citySelected', city);
-      this.searchInput = '';
-      this.selectedCityIndex = 0; // Reset indeksu po wyborze miasta
-    },
-  },
-  mounted() {
-    this.$el.querySelector('input')?.addEventListener('keyup', this.handleKeyPress);
-  },
+const URL_API_GEOCODING = 'https://geocoding-api.open-meteo.com/v1/search?name=';
+
+const emits = defineEmits(['citySelected']);
+
+const searchInput = ref('');
+const searchingCities = ref([] as cityProps[]);
+const selectedCityIndex = ref(0);
+
+const fetchCities = async (input: string) => {
+  try {
+    const response = await getCity(input);
+    const { results } = response;
+    searchingCities.value = processCityResults(results);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const getCity = async (input: string) => {
+  const response = await fetch(`${URL_API_GEOCODING}${input}`);
+  const json = await response.json();
+  return json;
+};
+
+const processCityResults = (results: cityProps[]) => {
+  if (Array.isArray(results)) {
+    return results.map((city) => ({
+      key: city.name + city.longitude + city.latitude,
+      name: city.name,
+      country: city.country,
+      longitude: city.longitude,
+      latitude: city.latitude,
+    }));
+  }
+  return [];
+};
+
+const handleSearchInput = (event: Event) => {
+  searchInput.value = (event.target as HTMLInputElement).value;
+};
+
+const handleKeyPress = (event: KeyboardEvent) => {
+  if (event.key === 'Enter' && searchingCities.value.length > 0) {
+    selectCity(searchingCities.value[selectedCityIndex.value < 0 ? 0 : selectedCityIndex.value]);
+  }
+  if (event.key === 'ArrowDown') {
+    if (selectedCityIndex.value < searchingCities.value.length - 1) {
+      selectedCityIndex.value++;
+    }
+  }
+  if (event.key === 'ArrowUp') {
+    if (selectedCityIndex.value > 0) {
+      selectedCityIndex.value--;
+    }
+  }
+};
+
+const selectCity = (city: cityProps) => {
+  // emit('citySelected', city);
+  emits('citySelected',city);
+  searchInput.value = '';
+  selectedCityIndex.value = 0;
+};
+
+watch(searchInput, fetchCities);
+
+onMounted(() => {
+  const inputElement = document.querySelector('input');
+  if (inputElement) {
+    inputElement.addEventListener('keyup', handleKeyPress);
+  }
 });
 </script>
 
@@ -120,6 +120,6 @@ export default defineComponent({
   position: relative;
 }
 .selected-city {
-  background-color: #e6f7ff; 
+  background-color: #e6f7ff;
 }
 </style>
