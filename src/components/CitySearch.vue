@@ -18,10 +18,10 @@
       <q-item
         clickable
         v-ripple
-        v-for="city in searchingCities"
+        v-for="(city,index) in searchingCities"
         :key="city.key"
         @click="selectCity(city)"
-        
+        :class="{ 'selected-city': index === selectedCityIndex }"
       >
         <q-item-section>{{ city.name }} - {{ city.country }}</q-item-section>
       </q-item>
@@ -41,6 +41,7 @@ export default defineComponent({
     return {
       searchInput: '',
       searchingCities: [] as cityProps[],
+      selectedCityIndex: 0,
     };
   },
   watch: {
@@ -80,12 +81,24 @@ export default defineComponent({
     },
     handleKeyPress(event: KeyboardEvent) {
       if (event.key === 'Enter' && this.searchingCities.length > 0) {
-        this.selectCity(this.searchingCities[0]);
+        this.selectCity(this.searchingCities[this.selectedCityIndex < 0 ? 0 : this.selectedCityIndex]);
+      } else if (event.key === 'ArrowDown') {
+        // Przewijanie w dół
+        if (this.selectedCityIndex < this.searchingCities.length - 1) {
+          this.selectedCityIndex++;
+        }
+      } else if (event.key === 'ArrowUp') {
+        // Przewijanie w górę
+        if (this.selectedCityIndex > 0) {
+          this.selectedCityIndex--;
+        }
       }
+      console.log(this.selectedCityIndex);
     },
     selectCity(city: cityProps) {
       this.$emit('citySelected', city);
       this.searchInput = '';
+      this.selectedCityIndex = 0; // Reset indeksu po wyborze miasta
     },
   },
   mounted() {
@@ -105,5 +118,8 @@ export default defineComponent({
 }
 .search-wrapper {
   position: relative;
+}
+.selected-city {
+  background-color: #e6f7ff; 
 }
 </style>
